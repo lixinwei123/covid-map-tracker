@@ -5,19 +5,20 @@
 </ion-header> -->
 
 <ion-content padding class = "background-photo">
-  <h1 class = "login-header"  >Avoid Covid, Save Lives</h1>
+  <h1 class = "login-header"  >Welcome to <span style = "color: #ea80fc">Cure-Rona</span>, an app that provides contact tracing</h1>
   <ion-card class = "login-card" >
-    <p> don't have an account yet? <a style = "color:#1c3d2b;" (click) = "goToRegister()"><u><b>register</b></u></a> now!</p>
-    <ion-item>
+    <p> don't have an account yet? <a style = "color:#ea80fc;" (click) = "goToRegister()"><u><b>register</b></u></a> now!</p>
+    <ion-item class = "background-primary">
     <ion-label position = "floating">Email Address</ion-label>
     <ion-input type="text" [(ngModel)] = "email"></ion-input>
     </ion-item>
-    <ion-item style = "margin-bottom:3rem;">
+    <ion-item style = "margin-bottom:3rem;" class = "background-primary">
     <ion-label position = "floating" >Password</ion-label>
     <ion-input type="password" [(ngModel)] = "password"></ion-input>
     </ion-item>
     <div style = "text-align:center;margin-bottom:3rem;">
-      <ion-button color = "secondary" (click) = "login()">login</ion-button>
-    </div>
+      <ion-button color = "secondary" (click) = "login()" class = ""> <span style = "color:black">login </span></ion-button>
+    </div> 
   </ion-card>
+  <ion-spinner name="lines"></ion-spinner>
 </ion-content>

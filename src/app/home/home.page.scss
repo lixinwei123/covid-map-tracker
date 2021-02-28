@@ -1,0 +1,29 @@
+
+ion-content{
+    --background:#3c4042;
+}
+.card-header{
+    border:0px groove ;
+    border-bottom-right-radius: 3rem;
+    border-color: #387a2d;
+    --background: #ea80fc;
+    ion-card-subtitle{
+        color:#202124
+    }
+}
+
+.card-content{
+    background :#202124;
+    color:white
+}
+
+.card{
+    background:#202124
+}
+
+.delete-card-icon{
+    display: block;
+    float: right;
+    size: 3rem;
+    font-size: 2rem;
+}
