@@ -1,8 +1,14 @@
 <ion-content>
   <ion-item class = "background-primary">
-    <ion-input type="text" [(ngModel)] = "address" (click)="showAddressModal()" placeholder = "Search for the location you have been to" ></ion-input>
+    <ion-input type="text" [(ngModel)]="autocomplete.query"   (ionInput)="updateSearch()" placeholder= "search for an address"></ion-input>
     <ion-button icon-only > <ion-icon name="search-outline"></ion-icon></ion-button>
   </ion-item>
+
+  <ion-list class = "search-list">
+    <ion-item *ngFor="let item of autocompleteItems" tappable   (click)="chooseItem(item)">
+      {{ item }}
+    </ion-item>
+  </ion-list>
   <div #map id = "map"></div>
 </ion-content>
 
