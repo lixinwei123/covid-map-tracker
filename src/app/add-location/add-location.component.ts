@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Geolocation ,GeolocationOptions ,Geoposition ,PositionError } from '@ionic-native/geolocation'; 
-import { NavController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
+import { AutoCompletePage } from '../auto-complete/auto-complete.page';
 import {MapStyleConstants} from '../mapStyle';
 // import { Geolocation } from '@ionic-native/geolocation/ngx';
 declare var google: any;
@@ -17,12 +18,16 @@ export class AddLocationComponent implements OnInit {
   currentPos: any;
   lat: any = "";
   lon: any = "";
+  address: any;
   mapStyle : any;
 @ViewChild('map') mapElement: ElementRef;
   map: any;
   
-  constructor(mapConst: MapStyleConstants) { 
+  constructor(mapConst: MapStyleConstants, public modalCtrl: ModalController) { 
     this.mapStyle = mapConst.darkThemeMap;
+    // this.address = {
+    //     place: ''
+    // };
     this.getGPS()
   }
 
@@ -74,6 +79,21 @@ addMarker(){
     infoWindow.open(this.map, marker);
     });
 }
+
+async showAddressModal () {
+    let modal = await this.modalCtrl.create({
+        component: AutoCompletePage
+    });
+    let me = this;
+    modal.onDidDismiss().then((data : any) =>{
+        console.log(data.data.latlon);
+        let latlon = data.data.latlon
+        // this.address.place = data;
+        this.address = data.data.location
+        this.addMap(latlon.lat,latlon.lon);
+    })
+    modal.present();
+  }
 }
 
 

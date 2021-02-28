@@ -1,4 +1,8 @@
-<p>
-  add-location works!
-</p>
-<div #map id = "map"></div>
+<ion-content>
+  <ion-item class = "background-primary">
+    <ion-input type="text" [(ngModel)] = "address" (click)="showAddressModal()" placeholder = "Search for the location you have been to" ></ion-input>
+    <ion-button icon-only > <ion-icon name="search-outline"></ion-icon></ion-button>
+  </ion-item>
+  <div #map id = "map"></div>
+</ion-content>
+

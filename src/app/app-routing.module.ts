@@ -26,6 +26,10 @@ const routes: Routes = [
   {
     path: 'profile',
     loadChildren: () => import('./profile/profile.module').then( m => m.ProfilePageModule)
+  },
+  {
+    path: 'auto-complete',
+    loadChildren: () => import('./auto-complete/auto-complete.module').then( m => m.AutoCompletePageModule)
   }
 ];
 
