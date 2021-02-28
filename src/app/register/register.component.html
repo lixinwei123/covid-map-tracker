@@ -1,0 +1,34 @@
+<ion-content>
+	
+  <ion-button  icon-only (click) = "closeModal();" class = "close-button" ><ion-icon name = "close" color = "secondary"></ion-icon></ion-button>
+    <h1>Registration</h1>
+    <div class = "input-information">
+      <ion-item>
+      <ion-label position = "floating">Email Address</ion-label>
+      <ion-input type="text" [(ngModel)] = "email"></ion-input>
+      </ion-item>
+      <ion-item>
+      <ion-label position = "floating">Confirm Email Address</ion-label>
+      <ion-input type="text" [(ngModel)] = "emailC"></ion-input>
+      </ion-item>
+      <ion-item>
+      <ion-label position = "floating" >Password</ion-label>
+      <ion-input type="password"[(ngModel)] = "password" ></ion-input>
+      </ion-item>
+        <ion-item>
+      <ion-label position = "floating" >Confirm Password</ion-label>
+      <ion-input type="password" [(ngModel)] = "passwordC"></ion-input>
+      </ion-item>
+      <ion-item>
+      <ion-label position = "floating">First Name</ion-label>
+      <ion-input type="text" [(ngModel)] = "firstname"></ion-input>
+      </ion-item>
+      <ion-item>
+      <ion-label position = "floating">Last Name</ion-label>
+      <ion-input type="text" [(ngModel)] = "lastname"></ion-input>
+      </ion-item>
+    </div>
+      <div class = "next-step">		
+        <ion-button color = "secondary" (click) = "finishRegistration()">Finish Registration</ion-button>
+      </div>
+  </ion-content>
