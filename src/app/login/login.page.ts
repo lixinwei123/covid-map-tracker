@@ -32,8 +32,8 @@ export class LoginPage implements OnInit {
       cssClass: "../register.component.scss"
     });
    return await regModal.present();
-    
   }
+  
   async login(){
     try{
           this.afAuth.signInWithEmailAndPassword(this.email,this.password).then(res =>{
@@ -41,7 +41,7 @@ export class LoginPage implements OnInit {
           this.uInfo.setUserInfo(res.user.uid);
           
         if(res.user.uid){
-          this.router.navigateByUrl('/home')
+          this.router.navigateByUrl('/tabs')
         }
         },
         fail =>{
