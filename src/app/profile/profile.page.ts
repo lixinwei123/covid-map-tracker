@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { AlertController } from '@ionic/angular';
+import { UserInfoService } from '../user-info.service';
 
 @Component({
   selector: 'app-profile',
@@ -7,6 +10,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ProfilePage implements OnInit {
   progressVal: any = 0
+  isRona: any = false;
   public sympForm = [
     { val: 'Fever or chills', isChecked: false },
     { val: 'Cough', isChecked: false },
@@ -20,7 +24,7 @@ export class ProfilePage implements OnInit {
     {val:'Diarrhea',isChecked: false}
 
   ];
-  constructor() { }
+  constructor(public alertCtrl: AlertController, private uInfo: UserInfoService) { }
 
   ngOnInit() {
   }
@@ -40,4 +44,28 @@ export class ProfilePage implements OnInit {
     }
     this.progressVal = sympCount / 10 
   }
+
+  async confirmRona(){
+    console.log(this.isRona)
+    this.isRona = !this.isRona
+    const alert = await this.alertCtrl.create({
+      header: "Are you sure? users will be notified",
+      buttons:[
+        {
+          text:"confirm",
+          handler: () =>{
+            this.isRona =  !this.isRona
+            this.uInfo.setCorona(this.isRona)
+          }
+        },
+        {
+          text: "cancel",
+          role: 'cancel'
+        }
+      ]
+    })
+    await alert.present();
+    console.log()
+  }
+
 }

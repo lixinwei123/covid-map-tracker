@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserInfoService } from '../user-info.service';
-
+// import * as firebase from 'firebase';
+import { AngularFireDatabase } from '@angular/fire/database';
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
@@ -8,13 +9,19 @@ import { UserInfoService } from '../user-info.service';
 })
 export class HomePage implements OnInit {
   uInfo: any;
-  constructor(private uInfoProvider: UserInfoService) { 
+  constructor(private uInfoProvider: UserInfoService, private afData: AngularFireDatabase) { 
     this.uInfo = this.uInfoProvider.getUserInfo();
+    this.loadAlerts()
   }
 
   ngOnInit() {
-    // this.firstName= 
-    // console.log(this.firstName,"data")
+  
+  }
+
+  loadAlerts(){
+    this.afData.database.ref("addresses").on('child_changed', datasnap =>{
+      console.log(datasnap)
+    })
   }
 
 }

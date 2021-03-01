@@ -9,6 +9,7 @@ import * as firebase from 'firebase';
 export class UserInfoService {
 usrData: any;
 usrId: any;
+hasCorona: boolean = false;
   constructor(public afAuth: AngularFireAuth, public  afData: AngularFireDatabase) {
 
    }
@@ -20,6 +21,10 @@ usrId: any;
      console.log("loaded current user: ", this.usrData);
 
    });
+ }
+
+ setCorona(bool){
+    this.afData.database.ref('users/' + this.usrId).child("hasCorona").set(bool);
  }
 
  setUserInfoById(id){

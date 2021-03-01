@@ -1,6 +1,8 @@
 import { Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
+import { AngularFireDatabase } from '@angular/fire/database';
 import { AlertController, ModalController, NavController } from '@ionic/angular';
 import {MapStyleConstants} from '../mapStyle';
+import { UserInfoService } from '../user-info.service';
 // import { Geolocation } from '@ionic-native/geolocation/ngx';
 declare var google: any;
 @Component({
@@ -20,21 +22,29 @@ export class AddLocationComponent implements OnInit {
   date: any;
   startHour: any;
   endHour: any;
+  currentDate: any;
   service = new google.maps.places.AutocompleteService();
 @ViewChild('map') mapElement: ElementRef;
   map: any;
   
-  constructor(mapConst: MapStyleConstants, public modalCtrl: ModalController, private zone: NgZone, public alertCtrl: AlertController) { 
+  constructor(mapConst: MapStyleConstants, 
+    public modalCtrl: ModalController, 
+    private zone: NgZone, 
+    public alertCtrl: AlertController,
+    private uInfo: UserInfoService,
+    private afData: AngularFireDatabase) { 
     this.mapStyle = mapConst.darkThemeMap;
     this.getGPS()
     this.autocompleteItems = [];
     this.autocomplete = {
       query: ''
     };
+
+    
   }
 
   ngOnInit() {
-
+    // console.log(formatDate);
   }
    getGPS(){
     navigator.geolocation.getCurrentPosition( (success) => {
@@ -133,30 +143,77 @@ addMarker(){
     return;
   }
   if(this.startHour == undefined || this.endHour == undefined || this.date == undefined){
-    this.alertError("Please make sure all three fields are selected and filled")
+    this.alert("error", "Please make sure all three fields are selected and filled")
+    return
+  }
+
+
+  if(this.autocomplete.query == null || this.autocomplete.query == undefined || this.autocomplete.query.length == 0){
+    this.alert("error", "please make sure the location searched is valid")
     return
   }
 
   let startHour = this.startHour.split("T")[1].split(":")[0]
   let endHour = this.endHour.split("T")[1].split(":")[0]
+
+  if(parseInt(endHour)  < parseInt (startHour)){
+    this.alert("error", "The starting hour cannot be greater than the ending hour")
+    return
+  }
   let date = this.date.split("T")[0].split(":")[0]
+  let currentDay = new Date().getDate()
+  let currentMonth = new Date().getMonth() + 1
+  let selectedDay = date.split("-")[2]
+  let selectedMonth = date.split("-")[1]
+  if(parseInt(selectedDay) > currentDay || parseInt(selectedMonth) > currentMonth){
+    this.alert("error","please make sure the date entered is correct")
+    return
+  }
+  console.log(this.date) 
+  let latlon = {lat: this.lat,lon:this.lon}
+  let dataObj = {
+    startHour: startHour,
+    endHour: endHour,
+    date: date,
+    latlon:latlon,
+    address: this.autocomplete.query
+  }
   console.log(date)
   console.log(endHour)
-   this.modalCtrl.dismiss()
+  let usrInfo = this.uInfo.getUserInfo()
+  console.log(usrInfo.uid)
+  this.afData.database.ref('alerts').child(usrInfo.uid).push(dataObj).then( (success) =>{
+    // console.log(success)
+    this.afData.database.ref('addresses').child(this.autocomplete.query).child(usrInfo.uid).child(success.key).set(dataObj).then(() =>{
+      this.alert("success!", "the data has been successfully uploaded")
+      this.modalCtrl.dismiss()
+    },
+    (fail2) =>{
+      this.alert("error",fail2)
+    }
+    )
+   
+  },
+  (fail) =>{
+    this.alert("error",fail)
+  }
+  );
+
  }
 
 
- async alertError(error) {
+ async alert(title,content) {
   const alert = await this.alertCtrl.create({
     // cssClass: 'my-custom-class',
-    header: 'Error',
+    header: title,
     // subHeader: 'Subtitle',
-    message: error,
+    message: content,
     buttons: ['OK']
   });
-
   await alert.present();
 }
+
+
 }
 
 

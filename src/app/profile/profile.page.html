@@ -36,7 +36,7 @@
       <ion-col>
       <ion-item>
         <ion-label>I have covid</ion-label>
-        <ion-checkbox slot="end" ></ion-checkbox>  
+        <ion-checkbox slot="end" [(ngModel)] = "isRona" (click) = confirmRona()></ion-checkbox>  
           </ion-item> 
       </ion-col>
       <ion-col style = "text-align: center; ">
