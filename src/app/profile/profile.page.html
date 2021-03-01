@@ -1,9 +1,47 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>profile</ion-title>
+    <ion-title>Welcome Kevin</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <ion-item>
+  <ion-label style = "text-align: center;">Symptoms && Risk Analysis</ion-label>
+</ion-item>
+<ion-progress-bar  value= {{progressVal}} color = "success" *ngIf = "progressVal < 0.4"></ion-progress-bar>
+<ion-progress-bar  value= {{progressVal}} color = "warning" *ngIf = "progressVal >= 0.4 && progressVal < 0.7"></ion-progress-bar>
+<ion-progress-bar  value= {{progressVal}} color = "danger" *ngIf = "progressVal >= 0.7"></ion-progress-bar>
+<ion-grid>
+  <ion-row>
+    <ion-col>
+      caution
+    </ion-col>
+    <ion-col>
+      risky
+    </ion-col>
+    <ion-col>
+      stay home
+    </ion-col>
+  </ion-row>
+</ion-grid>
+  <ion-list>
+    <ion-item *ngFor="let entry of sympForm">
+      <ion-label>{{entry.val}}</ion-label>
+      <ion-checkbox slot="end" [(ngModel)]="entry.isChecked" (click) = "evalDanger(entry)"></ion-checkbox>
+    </ion-item>
+  </ion-list>
 
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+      <ion-item>
+        <ion-label>I have covid</ion-label>
+        <ion-checkbox slot="end" ></ion-checkbox>  
+          </ion-item> 
+      </ion-col>
+      <ion-col style = "text-align: center; ">
+        <ion-button>Manage Places</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

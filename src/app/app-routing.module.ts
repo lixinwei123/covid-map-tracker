@@ -28,9 +28,10 @@ const routes: Routes = [
     loadChildren: () => import('./profile/profile.module').then( m => m.ProfilePageModule)
   },
   {
-    path: 'auto-complete',
-    loadChildren: () => import('./auto-complete/auto-complete.module').then( m => m.AutoCompletePageModule)
-  }
+    path: 'map',
+    loadChildren: () => import('./map/map.module').then( m => m.MapPageModule)
+  },
+
 ];
 
 @NgModule({

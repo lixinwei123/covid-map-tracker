@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { AutoCompletePage } from './auto-complete.page';
+import { MapPage } from './map.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: AutoCompletePage
+    component: MapPage
   }
 ];
 
@@ -14,4 +14,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class AutoCompletePageRoutingModule {}
+export class MapPageRoutingModule {}

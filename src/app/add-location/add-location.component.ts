@@ -1,7 +1,5 @@
 import { Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
-import { Geolocation ,GeolocationOptions ,Geoposition ,PositionError } from '@ionic-native/geolocation'; 
-import { ModalController, NavController } from '@ionic/angular';
-import { AutoCompletePage } from '../auto-complete/auto-complete.page';
+import { AlertController, ModalController, NavController } from '@ionic/angular';
 import {MapStyleConstants} from '../mapStyle';
 // import { Geolocation } from '@ionic-native/geolocation/ngx';
 declare var google: any;
@@ -19,11 +17,14 @@ export class AddLocationComponent implements OnInit {
   autocompleteItems;
   autocomplete;
   address: any
+  date: any;
+  startHour: any;
+  endHour: any;
   service = new google.maps.places.AutocompleteService();
 @ViewChild('map') mapElement: ElementRef;
   map: any;
   
-  constructor(mapConst: MapStyleConstants, public modalCtrl: ModalController, private zone: NgZone) { 
+  constructor(mapConst: MapStyleConstants, public modalCtrl: ModalController, private zone: NgZone, public alertCtrl: AlertController) { 
     this.mapStyle = mapConst.darkThemeMap;
     this.getGPS()
     this.autocompleteItems = [];
@@ -79,20 +80,6 @@ addMarker(){
 
 }
 
-async showAddressModal () {
-    let modal = await this.modalCtrl.create({
-        component: AutoCompletePage
-    });
-    let me = this;
-    modal.onDidDismiss().then((data : any) =>{
-        console.log(data.data.latlon);
-        let latlon = data.data.latlon
-        // this.address.place = data;
-        this.address = data.data.location
-        this.addMap(latlon.lat,latlon.lon);
-    })
-    modal.present();
-  }
 
   chooseItem(item: any) {
     this.address = item;
@@ -101,6 +88,10 @@ async showAddressModal () {
     this.autocomplete.query = this.address
   }
 
+  search(){
+    this.geoCode(this.autocomplete.query)
+    this.autocompleteItems = []
+  }
   updateSearch() {
     if (this.autocomplete.query == '') {
      this.autocompleteItems = [];
@@ -135,6 +126,37 @@ async showAddressModal () {
     return 
    });
  }
+
+ submitForum(parseData){
+  if(!parseData){
+    this.modalCtrl.dismiss()
+    return;
+  }
+  if(this.startHour == undefined || this.endHour == undefined || this.date == undefined){
+    this.alertError("Please make sure all three fields are selected and filled")
+    return
+  }
+
+  let startHour = this.startHour.split("T")[1].split(":")[0]
+  let endHour = this.endHour.split("T")[1].split(":")[0]
+  let date = this.date.split("T")[0].split(":")[0]
+  console.log(date)
+  console.log(endHour)
+   this.modalCtrl.dismiss()
+ }
+
+
+ async alertError(error) {
+  const alert = await this.alertCtrl.create({
+    // cssClass: 'my-custom-class',
+    header: 'Error',
+    // subHeader: 'Subtitle',
+    message: error,
+    buttons: ['OK']
+  });
+
+  await alert.present();
+}
 }
 
 

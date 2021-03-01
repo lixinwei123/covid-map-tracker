@@ -1,14 +1,56 @@
 <ion-content>
   <ion-item class = "background-primary">
-    <ion-input type="text" [(ngModel)]="autocomplete.query"   (ionInput)="updateSearch()" placeholder= "search for an address"></ion-input>
-    <ion-button icon-only > <ion-icon name="search-outline"></ion-icon></ion-button>
+    <ion-input type="text" [(ngModel)]="autocomplete.query"   (ionInput)="updateSearch()" placeholder= "search and add an address you been to"></ion-input>
+    <ion-button icon-only (click) = "search()"> <ion-icon name="search-outline"></ion-icon></ion-button>
   </ion-item>
 
-  <ion-list class = "search-list">
+  <ion-list class = "search-list" *ngIf = "autocompleteItems.length > 0">
     <ion-item *ngFor="let item of autocompleteItems" tappable   (click)="chooseItem(item)">
       {{ item }}
     </ion-item>
   </ion-list>
   <div #map id = "map"></div>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-item class = "background-primary">
+          <!-- <ion-label position = "floating">Month, day, Year</ion-label> -->
+          <ion-datetime displayFormat = "MMM DD, YYYY" placeholder= "date" display-timezone="utc" [(ngModel)] = "date"></ion-datetime>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col  class = "fixed-col" size= "6">
+        <ion-item class = "background-primary">
+          <!-- <ion-label position = "floating">Starting hour</ion-label> -->
+          <ion-datetime displayFormat = "HH" placeholder="starting Hour" display-timezone="utc" [(ngModel)] = "startHour"></ion-datetime>
+        </ion-item>
+      </ion-col>
+      <ion-col  class = "fixed-col" size= "6">
+        <ion-item class = "background-primary">
+          <!-- <ion-label position = "floating">Ending hour</ion-label> -->
+          <ion-datetime displayFormat = "HH" placeholder="ending Hour" display-timezone="utc" [(ngModel)] = "endHour"></ion-datetime>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-grid>
+    <ion-row>
+      <ion-col class = "button-col">
+        <ion-button (click) = "submitForum(false)">
+          cancel
+        </ion-button>
+      </ion-col>
+      <ion-col class = "button-col">
+        <ion-button (click) = "submitForum(true)">
+          submit
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <!-- <div class = "submit-button">
+
+  </div> -->
 </ion-content>
 

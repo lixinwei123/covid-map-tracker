@@ -4,17 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { AutoCompletePageRoutingModule } from './auto-complete-routing.module';
+import { MapPageRoutingModule } from './map-routing.module';
 
-import { AutoCompletePage } from './auto-complete.page';
+import { MapPage } from './map.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    AutoCompletePageRoutingModule
+    MapPageRoutingModule
   ],
-  declarations: [AutoCompletePage]
+  declarations: [MapPage]
 })
-export class AutoCompletePageModule {}
+export class MapPageModule {}
