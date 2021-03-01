@@ -33,13 +33,21 @@
 
   <ion-grid>
     <ion-row>
-      <ion-col>
+      <ion-col >
       <ion-item>
         <ion-label>I have covid</ion-label>
         <ion-checkbox slot="end" [(ngModel)] = "isRona" (click) = confirmRona()></ion-checkbox>  
           </ion-item> 
       </ion-col>
-      <ion-col style = "text-align: center; ">
+      <ion-col *ngIf = "isRona">
+        <ion-item class = "background-primary" >
+          <!-- <ion-label position = "floating">Month, day, Year</ion-label> -->
+          <ion-datetime displayFormat = "MMM DD, YYYY" [max] = "maxVal" placeholder= "date found out" display-timezone="utc" [(ngModel)] = "date" (ionChange) = "updateRonaDate()"></ion-datetime>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col style = "text-align: center; " >
         <ion-button>Manage Places</ion-button>
       </ion-col>
     </ion-row>

@@ -24,7 +24,21 @@ hasCorona: boolean = false;
  }
 
  setCorona(bool){
-    this.afData.database.ref('users/' + this.usrId).child("hasCorona").set(bool);
+    this.afData.database.ref('users/' + this.usrId).child("hasCorona").set(bool).then(() =>{
+      this.hasCorona = bool;
+    });
+ }
+
+ setCoronaDate(date){
+  this.afData.database.ref('users/' + this.usrId).child("coronaDate").set(date).then(() =>{
+    console.log("date set!")
+  });
+ }
+
+ setUserDiagnostic(data){
+  this.afData.database.ref('users/' + this.usrId).child("diagnostic").set(data).then(() =>{
+    console.log("date set!")
+  });
  }
 
  setUserInfoById(id){
@@ -36,6 +50,9 @@ hasCorona: boolean = false;
  });
 }
 
+// getHasRona(){
+//   return this.usrData.hasCorona
+// }
 getUserInfo(){
 	return this.usrData;
 }

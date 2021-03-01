@@ -83,7 +83,8 @@ export class RegisterComponent implements OnInit {
        uid: res.user.uid,
        email:this.email,
        firstname: this.firstname,
-       lastname: this.lastname
+       lastname: this.lastname,
+       hasCorona: false
      }
      this.afData.database.ref('users').child(usrInfo.uid).update(usrInfo);
          console.log("registered",res.user.uid)

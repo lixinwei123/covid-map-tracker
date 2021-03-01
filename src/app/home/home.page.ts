@@ -19,8 +19,13 @@ export class HomePage implements OnInit {
   }
 
   loadAlerts(){
-    this.afData.database.ref("addresses").on('child_changed', datasnap =>{
-      console.log(datasnap)
+    this.afData.database.ref("addresses").on("child_added", datasnap =>{
+      console.log("child_added key",datasnap.key)
+      console.log("child_added val", datasnap.val())
+    })
+    this.afData.database.ref("addresses").on("child_changed",datasnap =>{
+      console.log("child_changed key", datasnap.key)
+      console.log("child_changed val", datasnap.val())
     })
   }
 

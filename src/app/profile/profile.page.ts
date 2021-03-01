@@ -11,7 +11,10 @@ import { UserInfoService } from '../user-info.service';
 export class ProfilePage implements OnInit {
   progressVal: any = 0
   isRona: any = false;
-  public sympForm = [
+  date: any;
+  usrData: any;
+  maxVal: any;
+   sympForm:any = [
     { val: 'Fever or chills', isChecked: false },
     { val: 'Cough', isChecked: false },
     { val: 'Shortness of breath or difficulty breathing', isChecked: false },
@@ -22,31 +25,79 @@ export class ProfilePage implements OnInit {
     {val:'Congestion or runny nose', isChecked: false},
     {val: 'Nausea or vomiting', isChecked: false},
     {val:'Diarrhea',isChecked: false}
-
   ];
-  constructor(public alertCtrl: AlertController, private uInfo: UserInfoService) { }
+  constructor(public alertCtrl: AlertController, private uInfo: UserInfoService) {
+    this.loadUserData()
+    let currentDay: any = new Date().getDate()
+    if(currentDay < 10){
+      currentDay = "0" + currentDay.toString()
+    }
+    let currentMonth:any = new Date().getMonth() + 1
+    if(currentMonth < 10){
+      currentMonth = "0" + currentMonth.toString()
+    }
+    let currentYear = new Date().getFullYear()
+    this.date = currentYear + "-" + currentMonth + "-" + currentDay
+    this.maxVal = this.date
+    console.log(this.date)
+    // this.isRona = this.uInfo.getUserInfo().hasCorona
+   }
 
   ngOnInit() {
   }
 
+  updateRonaDate(){
+    console.log(this.date)
+    this.uInfo.setCoronaDate(this.date.split("T")[0]);
+  }
+  loadUserData(){
+    this.usrData = this.uInfo.getUserInfo();
+    if(this.usrData == undefined){
+      setTimeout(() => {
+        this.loadUserData()
+      }, 1000);
+    }else{
+      this.isRona = this.usrData.hasCorona;
+      if(this.usrData.coronaDate){
+        this.date = this.usrData.coronaDate
+      }
+      if(this.usrData.diagnostic){
+        this.sympForm = this.usrData.diagnostic
+        let sympCount = 0
+        for(let index in this.sympForm){
+          if(this.sympForm[index].isChecked){
+            sympCount += 1
+          }
+        }
+        this.progressVal = sympCount / 10
+      }
+    }
+  }
+
   evalDanger(entry){
     let sympCount = 0
+    let tempForm = []
     for(let index in this.sympForm){
+      tempForm.push({val:this.sympForm[index].val,isChecked:this.sympForm[index].isChecked})
       if(this.sympForm[index].isChecked){
         sympCount += 1
       }
+      if(this.sympForm[index].val == entry.val){
+        tempForm[index].isChecked =  ! this.sympForm[index].isChecked
+      }
     }
-    console.log(entry)
     if(entry.isChecked == false){
       sympCount += 1
     }else{
       sympCount -= 1
     }
     this.progressVal = sympCount / 10 
+    this.uInfo.setUserDiagnostic(tempForm)
   }
 
   async confirmRona(){
     console.log(this.isRona)
+    console.log(this.date)
     this.isRona = !this.isRona
     const alert = await this.alertCtrl.create({
       header: "Are you sure? users will be notified",
@@ -60,7 +111,10 @@ export class ProfilePage implements OnInit {
         },
         {
           text: "cancel",
-          role: 'cancel'
+          role: 'cancel',
+          handler:() =>{
+            this.isRona = this.isRona
+          }
         }
       ]
     })

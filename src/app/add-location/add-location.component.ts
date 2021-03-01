@@ -3,6 +3,7 @@ import { AngularFireDatabase } from '@angular/fire/database';
 import { AlertController, ModalController, NavController } from '@ionic/angular';
 import {MapStyleConstants} from '../mapStyle';
 import { UserInfoService } from '../user-info.service';
+
 // import { Geolocation } from '@ionic-native/geolocation/ngx';
 declare var google: any;
 @Component({
@@ -135,6 +136,7 @@ addMarker(){
     this.addMap(this.lat,this.lon);
     return 
    });
+   
  }
 
  submitForum(parseData){
@@ -184,7 +186,7 @@ addMarker(){
   console.log(usrInfo.uid)
   this.afData.database.ref('alerts').child(usrInfo.uid).push(dataObj).then( (success) =>{
     // console.log(success)
-    this.afData.database.ref('addresses').child(this.autocomplete.query).child(usrInfo.uid).child(success.key).set(dataObj).then(() =>{
+    this.afData.database.ref('addresses').child(this.autocomplete.query).child(usrInfo.uid).child(success.key).set({hasRona: this.uInfo.hasCorona, data:dataObj}).then(() =>{
       this.alert("success!", "the data has been successfully uploaded")
       this.modalCtrl.dismiss()
     },
@@ -198,7 +200,7 @@ addMarker(){
     this.alert("error",fail)
   }
   );
-
+  
  }
 
 
