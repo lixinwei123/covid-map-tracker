@@ -31,6 +31,10 @@ const routes: Routes = [
     path: 'map',
     loadChildren: () => import('./map/map.module').then( m => m.MapPageModule)
   },
+  {
+    path: 'manage-place',
+    loadChildren: () => import('./manage-place/manage-place.module').then( m => m.ManagePlacePageModule)
+  },
 
 ];
 

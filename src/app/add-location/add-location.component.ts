@@ -1,6 +1,6 @@
-import { Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, NgZone, OnInit, ViewChild } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
-import { AlertController, ModalController, NavController } from '@ionic/angular';
+import { AlertController, ModalController, NavController, NavParams } from '@ionic/angular';
 import {MapStyleConstants} from '../mapStyle';
 import { UserInfoService } from '../user-info.service';
 
@@ -13,7 +13,6 @@ declare var google: any;
 })
 
 export class AddLocationComponent implements OnInit {
-
   lat: any = "";
   lon: any = "";
   mapStyle : any;
@@ -25,6 +24,7 @@ export class AddLocationComponent implements OnInit {
   endHour: any;
   currentDate: any;
   maxDate: any;
+  isModify: boolean = false;
   service = new google.maps.places.AutocompleteService();
 @ViewChild('map') mapElement: ElementRef;
   map: any;
@@ -34,13 +34,37 @@ export class AddLocationComponent implements OnInit {
     private zone: NgZone, 
     public alertCtrl: AlertController,
     private uInfo: UserInfoService,
-    private afData: AngularFireDatabase) { 
+    private afData: AngularFireDatabase,
+    public navParam: NavParams) { 
     this.mapStyle = mapConst.darkThemeMap;
     this.getGPS()
     this.autocompleteItems = [];
     this.autocomplete = {
       query: ''
     };
+    if(this.navParam.get("addressP")){
+      this.address = this.navParam.get("addressP")
+      this.autocomplete.query = this.address
+      this.isModify = true
+    }
+    if(this.navParam.get("startHourP")){
+      this.startHour = this.navParam.get("startHourP")
+      this.isModify = true
+    }
+    if(this.navParam.get("endHourP")){
+      this.endHour = this.navParam.get("endHourP")
+    }
+    if(this.navParam.get("dateP")){
+      this.date = this.navParam.get("dateP")
+    }
+    if(this.navParam.get("latlonP")){
+      this.lat = this.navParam.get("latlonP").lat 
+      this.lon = this.navParam.get("latlonP").lon
+      console.log(this.lat,"hi")
+      this.loadMap()
+    }
+
+ 
 
     let currentDay: any = new Date().getDate()
     if(currentDay < 10){
@@ -52,10 +76,17 @@ export class AddLocationComponent implements OnInit {
     }
     let currentYear = new Date().getFullYear()
     this.maxDate = currentYear + "-" + currentMonth + "-" + currentDay
-
-    
   }
 
+  loadMap(){
+    if(this.mapElement){
+      this.addMap(this.lat,this.lon)
+    }else{
+      setTimeout(() => {
+        this.loadMap()
+      }, 1000);
+    }
+  }
   ngOnInit() {
     // console.log(formatDate);
   }
@@ -153,7 +184,7 @@ addMarker(){
 
  submitForum(parseData){
   if(!parseData){
-    this.modalCtrl.dismiss()
+    this.modalCtrl.dismiss(false)
     return;
   }
   if(this.startHour == undefined || this.endHour == undefined || this.date == undefined){
@@ -166,13 +197,28 @@ addMarker(){
     this.alert("error", "please make sure the location searched is valid")
     return
   }
+  let startHour,endHour
+  console.log(this.autocompleteItems)
 
-  let startHour = this.startHour.split("T")[1].split(":")[0]
-  let endHour = this.endHour.split("T")[1].split(":")[0]
+  try{
+    startHour = this.startHour.split("T")[1].split(":")[0]
+  }catch{
+    startHour = this.startHour
+  }
+  try{
+    endHour = this.endHour.split("T")[1].split(":")[0]
+  }catch{
+    endHour = this.endHour
+  }
+
 
   if(parseInt(endHour)  < parseInt (startHour)){
     this.alert("error", "The starting hour cannot be greater than the ending hour")
     return
+  }
+
+  if(!(this.autocompleteItems.includes(this.autocomplete.query)) && this.autocompleteItems.length > 0){
+    this.autocomplete.query = this.autocompleteItems[0]
   }
   let date = this.date.split("T")[0].split(":")[0]
   console.log(this.date) 
@@ -188,22 +234,38 @@ addMarker(){
   console.log(endHour)
   let usrInfo = this.uInfo.getUserInfo()
   console.log(usrInfo.uid)
-  this.afData.database.ref('alerts').child(usrInfo.uid).push(dataObj).then( (success) =>{
-    // console.log(success)
-    this.afData.database.ref('addresses').child(this.autocomplete.query).child(usrInfo.uid).child(success.key).set({hasRona: this.uInfo.hasCorona, data:dataObj}).then(() =>{
-      this.alert("success!", "the data has been successfully uploaded")
-      this.modalCtrl.dismiss()
+  if(!this.isModify){
+    this.afData.database.ref('alerts').child(usrInfo.uid).push(dataObj).then( (success) =>{
+      this.afData.database.ref('addresses').child(this.autocomplete.query).child(usrInfo.uid).child(success.key).set({hasRona: this.uInfo.hasCorona, data:dataObj}).then(() =>{
+        this.alert("success!", "the data has been successfully uploaded")
+        this.uInfo.setUserAlerts()
+        this.modalCtrl.dismiss(true)
+      },
+      (fail2) =>{
+        this.alert("error",fail2)
+      }
+      )
+     
     },
-    (fail2) =>{
-      this.alert("error",fail2)
-    }
-    )
-   
-  },
-  (fail) =>{
-    this.alert("error",fail)
+    (fail) =>{
+      this.alert("error",fail)
+    });
+  }else{
+    this.afData.database.ref('alerts').child(usrInfo.uid).child(this.navParam.get("eventId")).update(dataObj).then( (success) =>{
+      this.afData.database.ref('addresses').child(this.navParam.get("addressP")).child(usrInfo.uid).child(this.navParam.get("eventId")).remove( () =>{
+        this.afData.database.ref('addresses').child(this.autocomplete.query).child(usrInfo.uid).child(this.navParam.get("eventId")).set({hasRona: this.uInfo.hasCorona, data:dataObj}).then(() =>{
+          this.alert("success!", "the data has been successfully modified")
+          this.uInfo.setUserAlerts()
+          this.modalCtrl.dismiss(true)
+        },
+        (fail2) =>{
+          this.alert("error",fail2)
+        }
+        )
+      })
+    })
   }
-  );
+
   
  }
 

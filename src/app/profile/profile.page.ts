@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { UserInfoService } from '../user-info.service';
 
@@ -26,7 +27,7 @@ export class ProfilePage implements OnInit {
     {val: 'Nausea or vomiting', isChecked: false},
     {val:'Diarrhea',isChecked: false}
   ];
-  constructor(public alertCtrl: AlertController, private uInfo: UserInfoService) {
+  constructor(public alertCtrl: AlertController, private uInfo: UserInfoService, public router: Router) {
     this.loadUserData()
     let currentDay: any = new Date().getDate()
     if(currentDay < 10){
@@ -37,7 +38,7 @@ export class ProfilePage implements OnInit {
       currentMonth = "0" + currentMonth.toString()
     }
     let currentYear = new Date().getFullYear()
-    this.date = currentYear + "-" + currentMonth + "-" + currentDay
+    // this.date = currentYear + "-" + currentMonth + "-" + currentDay
     this.maxVal = this.date
     console.log(this.date)
     // this.isRona = this.uInfo.getUserInfo().hasCorona
@@ -120,6 +121,10 @@ export class ProfilePage implements OnInit {
     })
     await alert.present();
     console.log()
+  }
+
+  goToManagePlace(){
+    this.router.navigateByUrl('/manage-place')
   }
 
 }

@@ -31,7 +31,7 @@ import { FormsModule } from '@angular/forms';
   // RegisterModule
 ],
 
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy},File],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy},File,],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
