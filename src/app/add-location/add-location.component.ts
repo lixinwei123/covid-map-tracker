@@ -24,6 +24,7 @@ export class AddLocationComponent implements OnInit {
   startHour: any;
   endHour: any;
   currentDate: any;
+  maxDate: any;
   service = new google.maps.places.AutocompleteService();
 @ViewChild('map') mapElement: ElementRef;
   map: any;
@@ -40,6 +41,17 @@ export class AddLocationComponent implements OnInit {
     this.autocomplete = {
       query: ''
     };
+
+    let currentDay: any = new Date().getDate()
+    if(currentDay < 10){
+      currentDay = "0" + currentDay.toString()
+    }
+    let currentMonth:any = new Date().getMonth() + 1
+    if(currentMonth < 10){
+      currentMonth = "0" + currentMonth.toString()
+    }
+    let currentYear = new Date().getFullYear()
+    this.maxDate = currentYear + "-" + currentMonth + "-" + currentDay
 
     
   }
@@ -163,14 +175,6 @@ addMarker(){
     return
   }
   let date = this.date.split("T")[0].split(":")[0]
-  let currentDay = new Date().getDate()
-  let currentMonth = new Date().getMonth() + 1
-  let selectedDay = date.split("-")[2]
-  let selectedMonth = date.split("-")[1]
-  if(parseInt(selectedDay) > currentDay || parseInt(selectedMonth) > currentMonth){
-    this.alert("error","please make sure the date entered is correct")
-    return
-  }
   console.log(this.date) 
   let latlon = {lat: this.lat,lon:this.lon}
   let dataObj = {
