@@ -5,23 +5,47 @@
 </ion-header>
 
 <ion-content>
- 
   <ion-card class = "card"  *ngFor = "let alert of sharedAlerts">
-    <ion-card-header class ="card-header">
-      <ion-card-subtitle >alert <span style ="float:right"> 20 minutes ago </span></ion-card-subtitle>
-      <!-- <ion-card-title>Card Title</ion-card-title> -->
-      {{alert.hasRona}}
+    <ion-card-header [class] ="alert.style_class" >
+      <ion-card-subtitle >
+        <ion-grid>
+          <ion-row>
+            <ion-col *ngIf = "!alert.isCritical" size = "8">
+              Potential Exposure Alert 
+            </ion-col>
+            <ion-col *ngIf = "alert.isCritical" size = "8">
+              Close Contact Exposure Alert
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+    </ion-card-subtitle>
     </ion-card-header>
-    <ion-card-content class = "card-content">
-      A user in your current area has self reported the contract of coronavirus
-      <span class = "delete-card-icon"><ion-icon name="close-outline"></ion-icon></span>
+    <ion-card-content class = "card-content" *ngIf = "!alert.isCritical">
+      A user in the same address <span style = "color:#d88a0d">{{alert.data.address}} </span> 
+      that you have visited on the same day
+       <span style = "color:#d88a0d" > {{alert.data.date}}</span>
+       has self reported the contraction of coronavirus, please look out for symptoms
+    </ion-card-content>
+    <ion-card-content class = "card-content" *ngIf = "alert.isCritical">
+      A user in the same address <span style = "color:#d88a0d">{{alert.data.address}} </span> 
+      that you have visited on the same day  <span style = "color:#d88a0d" > {{alert.data.date}}</span> AND same hour
+      <span style = "color:#d88a0d" > {{alert.data.startHour}}- {{alert.data.endHour}}</span>
+       has self reported the contraction of coronavirus, please look out for symptoms
     </ion-card-content>
   </ion-card>
 
+  <ion-card class = "card"  *ngIf = "sharedAlerts.length ==0">
+    <ion-card-header class ="card-header">
+      <ion-card-subtitle > You have no alerts at this moment!</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content class = "card-content">
+      Count it as a blessing
+    </ion-card-content>
+  </ion-card>
+<!-- 
 <ion-card class = "card">
   <ion-card-header class ="card-header">
     <ion-card-subtitle >3.1 miles away  <span style ="float:right"> 20 minutes ago </span></ion-card-subtitle>
-    <!-- <ion-card-title>Card Title</ion-card-title> -->
   </ion-card-header>
   <ion-card-content class = "card-content">
     A user in your current area has self reported the contract of coronavirus
@@ -32,11 +56,10 @@
 <ion-card class = "card">
   <ion-card-header class ="card-header">
     <ion-card-subtitle >50.1 miles away  <span style ="float:right"> 40 minutes ago </span></ion-card-subtitle>
-    <!-- <ion-card-title>Card Title</ion-card-title> -->
   </ion-card-header>
   <ion-card-content class = "card-content">
     A user in the area that you have been to within the last 2 weeks: "3643 Lancaster Ave" has self reported the contract of coronavirus
     <span class = "delete-card-icon"><ion-icon name="close-outline"></ion-icon></span>
   </ion-card-content>
-</ion-card>
+</ion-card> -->
 </ion-content>

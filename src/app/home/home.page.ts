@@ -19,6 +19,9 @@ export class HomePage implements OnInit {
   ngOnInit() {
     console.log("ngonInit")
     // this.ngZone.run(this.loadAlerts)
+  }
+
+  ionViewWillEnter(){
     this.loadAlerts()
   }
 
@@ -30,18 +33,6 @@ export class HomePage implements OnInit {
       }, 1000);
     }else{
       this.afData.database.ref("addresses").on("child_added", datasnap =>{
-        // let key = this.getKey(datasnap.val())
-        // let selfAlertObj = this.isAddressInList(datasnap.key)
-        // if( selfAlertObj && key != this.uInfoProvider.getUserId()){ 
-        //   let alertObjs = datasnap.val()[key] 
-        //   for(let key2 in alertObjs){
-        //     if(alertObjs[key2].hasRona == true && alertObjs[key2].date == selfAlertObj.date ){
-        //       this.sharedAlerts.push(
-        //         alertObjs[key2]
-        //       )
-        //     }
-        //   }
-        // }
         this.loadSharedAlerts(datasnap)
         console.log("child_added key",datasnap.key)
 
@@ -87,15 +78,35 @@ export class HomePage implements OnInit {
         for(let key2 in alertObjs){ 
           for(let key3 in selfAlertObjs){
             if(alertObjs[key2].hasRona == true && alertObjs[key2].data.date == selfAlertObjs[key3].date){
-              if(parseInt(alertObjs[key2].data.startHour) <= parseInt(selfAlertObjs[key3].startHour) && parseInt(alertObjs[key2].data.endHour) >= parseInt(selfAlertObjs[key3].startHour) ){
+              let otherStart = parseInt(alertObjs[key2].data.startHour)
+              let selfStart = parseInt(selfAlertObjs[key3].startHour)
+              let otherEnd = parseInt(alertObjs[key2].data.endHour)
+              let selfEnd = parseInt(selfAlertObjs[key3].endHour)
+              if( (otherStart <= selfStart && otherEnd >= selfStart) ||
+                  (otherStart <= selfEnd && otherEnd >= selfEnd) ||
+                  (selfStart <= otherStart && selfEnd >= otherStart) ||
+                  (selfStart <= otherEnd) && selfEnd >= otherEnd
+              ){
                 alertObjs[key2]["isCritical"] = true
+                alertObjs[key2]["style_class"] = "card-header-danger"
               }else{
                 alertObjs[key2]["isCritical"] = false
+                alertObjs[key2]["style_class"] = "card-header-secondary"
               }
+              alertObjs[key2]["key"]= key2
               this.ngZone.run( () =>{
-                this.sharedAlerts.push(
-                  alertObjs[key2]
-                )
+                let doPush = true
+                for(let i in this.sharedAlerts){
+                  if(this.sharedAlerts[i]["key"] == key2){
+                    doPush = false 
+                  }
+                }
+                if(doPush){
+                  this.sharedAlerts = [alertObjs[key2]].concat(this.sharedAlerts)
+                  // this.sharedAlerts.push(
+                  //   alertObjs[key2]
+                  // )
+                }
               })
               
             }

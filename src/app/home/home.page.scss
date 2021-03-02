@@ -12,13 +12,43 @@ ion-content{
     }
 }
 
+.card-header-danger{
+    border:0px groove ;
+    border-bottom-right-radius: 3rem;
+    border-color: #387a2d;
+    --background: #8d2663;
+    ion-card-subtitle{
+        color:#202124
+    }
+}
+
+.card-header-secondary{
+    border:0px groove ;
+    border-bottom-right-radius: 3rem;
+    border-color: #387a2d;
+    --background: #ea80fc;
+    ion-card-subtitle{
+        color:#202124
+    }
+}
+
 .card-content{
     background :#202124;
     color:white
 }
 
 .card{
-    background:#202124
+    background:#202124;
+    ion-card-subtitle{
+        margin:0
+    }
+    ion-card-header{
+        padding:0.5rem 0.5rem 0.5rem 0.5rem
+    }
+    ion-grid{
+        padding:0
+    }
+
 }
 
 .delete-card-icon{
