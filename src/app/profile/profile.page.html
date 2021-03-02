@@ -8,9 +8,7 @@
   <ion-item>
   <ion-label style = "text-align: center;">Symptoms & Risk Analysis</ion-label>
 </ion-item>
-<ion-progress-bar  value= {{progressVal}} color = "success" *ngIf = "progressVal < 0.4"></ion-progress-bar>
-<ion-progress-bar  value= {{progressVal}} color = "warning" *ngIf = "progressVal >= 0.4 && progressVal < 0.7"></ion-progress-bar>
-<ion-progress-bar  value= {{progressVal}} color = "danger" *ngIf = "progressVal >= 0.7"></ion-progress-bar>
+<ion-progress-bar  value= {{progressVal}} [color] = "progressBarColor"></ion-progress-bar>
 <ion-grid>
   <ion-row>
     <ion-col>

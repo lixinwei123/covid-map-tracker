@@ -12,6 +12,7 @@ import { UserInfoService } from '../user-info.service';
 })
 export class ProfilePage implements OnInit {
   progressVal: any = 0
+  progressBarColor: any = "success"
   isRona: any = false;
   date: any;
   usrData: any;
@@ -74,6 +75,13 @@ export class ProfilePage implements OnInit {
           }
         }
         this.progressVal = sympCount / 10
+        if(this.progressVal < 0.4){
+          this.progressBarColor = "success"
+        }else if(this.progressVal >= 0.4 && this.progressVal < 0.7){
+          this.progressBarColor = "warning"
+        }else{
+          this.progressBarColor = "danger"
+        }
       }
     }
   }
@@ -96,6 +104,13 @@ export class ProfilePage implements OnInit {
       sympCount -= 1
     }
     this.progressVal = sympCount / 10 
+    if(this.progressVal < 0.4){
+      this.progressBarColor = "success"
+    }else if(this.progressVal >= 0.4 && this.progressVal < 0.7){
+      this.progressBarColor = "warning"
+    }else{
+      this.progressBarColor = "danger"
+    }
     this.uInfo.setUserDiagnostic(tempForm)
   }
 

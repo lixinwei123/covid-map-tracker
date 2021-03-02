@@ -25,6 +25,7 @@ export class AddLocationComponent implements OnInit {
   currentDate: any;
   maxDate: any;
   isModify: boolean = false;
+  usrInfo: any;
   service = new google.maps.places.AutocompleteService();
 @ViewChild('map') mapElement: ElementRef;
   map: any;
@@ -88,7 +89,7 @@ export class AddLocationComponent implements OnInit {
     }
   }
   ngOnInit() {
-    // console.log(formatDate);
+    this.loadUserData()
   }
    getGPS(){
     navigator.geolocation.getCurrentPosition( (success) => {
@@ -101,6 +102,14 @@ export class AddLocationComponent implements OnInit {
     }
 }
 
+loadUserData(){
+  this.usrInfo = this.uInfo.getUserInfo()
+  if(this.usrInfo == undefined){
+    setTimeout(() => {
+      this.loadUserData()
+    }, 1000);
+  }
+}
 addMap(lat,long){
 
     let latLng = new google.maps.LatLng(lat, long);
@@ -232,11 +241,9 @@ addMarker(){
   }
   console.log(date)
   console.log(endHour)
-  let usrInfo = this.uInfo.getUserInfo()
-  console.log(usrInfo.uid)
   if(!this.isModify){
-    this.afData.database.ref('alerts').child(usrInfo.uid).push(dataObj).then( (success) =>{
-      this.afData.database.ref('addresses').child(this.autocomplete.query).child(usrInfo.uid).child(success.key).set({hasRona: this.uInfo.hasCorona, data:dataObj}).then(() =>{
+    this.afData.database.ref('alerts').child(this.usrInfo.uid).push(dataObj).then( (success) =>{
+      this.afData.database.ref('addresses').child(this.autocomplete.query).child(this.usrInfo.uid).child(success.key).set({hasRona: this.uInfo.hasCorona, data:dataObj}).then(() =>{
         this.alert("success!", "the data has been successfully uploaded")
         this.uInfo.setUserAlerts()
         this.modalCtrl.dismiss(true)
@@ -251,9 +258,9 @@ addMarker(){
       this.alert("error",fail)
     });
   }else{
-    this.afData.database.ref('alerts').child(usrInfo.uid).child(this.navParam.get("eventId")).update(dataObj).then( (success) =>{
-      this.afData.database.ref('addresses').child(this.navParam.get("addressP")).child(usrInfo.uid).child(this.navParam.get("eventId")).remove( () =>{
-        this.afData.database.ref('addresses').child(this.autocomplete.query).child(usrInfo.uid).child(this.navParam.get("eventId")).set({hasRona: this.uInfo.hasCorona, data:dataObj}).then(() =>{
+    this.afData.database.ref('alerts').child(this.usrInfo.uid).child(this.navParam.get("eventId")).update(dataObj).then( (success) =>{
+      this.afData.database.ref('addresses').child(this.navParam.get("addressP")).child(this.usrInfo.uid).child(this.navParam.get("eventId")).remove( () =>{
+        this.afData.database.ref('addresses').child(this.autocomplete.query).child(this.usrInfo.uid).child(this.navParam.get("eventId")).set({hasRona: this.uInfo.hasCorona, data:dataObj}).then(() =>{
           this.alert("success!", "the data has been successfully modified")
           this.uInfo.setUserAlerts()
           this.modalCtrl.dismiss(true)
