@@ -108,6 +108,8 @@ loadUserData(){
     setTimeout(() => {
       this.loadUserData()
     }, 1000);
+  }else{
+    console.log("loaded user info on add-location",this.usrInfo)
   }
 }
 addMap(lat,long){
@@ -243,7 +245,7 @@ addMarker(){
   console.log(endHour)
   if(!this.isModify){
     this.afData.database.ref('alerts').child(this.usrInfo.uid).push(dataObj).then( (success) =>{
-      this.afData.database.ref('addresses').child(this.autocomplete.query).child(this.usrInfo.uid).child(success.key).set({hasRona: this.uInfo.hasCorona, data:dataObj}).then(() =>{
+      this.afData.database.ref('addresses').child(this.autocomplete.query).child(this.usrInfo.uid).child(success.key).set({hasRona: this.usrInfo.hasCorona, data:dataObj}).then(() =>{
         this.alert("success!", "the data has been successfully uploaded")
         this.uInfo.setUserAlerts()
         this.modalCtrl.dismiss(true)
@@ -260,7 +262,7 @@ addMarker(){
   }else{
     this.afData.database.ref('alerts').child(this.usrInfo.uid).child(this.navParam.get("eventId")).update(dataObj).then( (success) =>{
       this.afData.database.ref('addresses').child(this.navParam.get("addressP")).child(this.usrInfo.uid).child(this.navParam.get("eventId")).remove( () =>{
-        this.afData.database.ref('addresses').child(this.autocomplete.query).child(this.usrInfo.uid).child(this.navParam.get("eventId")).set({hasRona: this.uInfo.hasCorona, data:dataObj}).then(() =>{
+        this.afData.database.ref('addresses').child(this.autocomplete.query).child(this.usrInfo.uid).child(this.navParam.get("eventId")).set({hasRona: this.usrInfo.hasCorona, data:dataObj}).then(() =>{
           this.alert("success!", "the data has been successfully modified")
           this.uInfo.setUserAlerts()
           this.modalCtrl.dismiss(true)

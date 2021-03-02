@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { ModalController, NavController } from '@ionic/angular';
 import { AddLocationComponent } from '../add-location/add-location.component';
@@ -14,6 +14,7 @@ export class ManagePlacePage implements OnInit {
   eventList: any;
   constructor(public navCtrl: NavController, private uInfo: UserInfoService, private afData: AngularFireDatabase,
     public modalCtrl: ModalController,
+    public ngZone: NgZone
     ) {
 
       this.loadUserData()
@@ -78,7 +79,9 @@ export class ManagePlacePage implements OnInit {
       for(let index in this.eventList){
         if(this.eventList[index].id == event.id){
           console.log(index)
-          this.eventList.splice(index,1)
+          this.ngZone.run( () =>{
+            this.eventList.splice(index,1)
+          })
           return
         }
       }

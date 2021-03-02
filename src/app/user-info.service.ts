@@ -64,9 +64,9 @@ hasCorona: boolean = false;
  });
 }
 
-// getHasRona(){
-//   return this.usrData.hasCorona
-// }
+getHasRona(){
+  return this.usrData.hasCorona
+}
 getUserInfo(){
 	return this.usrData;
 }

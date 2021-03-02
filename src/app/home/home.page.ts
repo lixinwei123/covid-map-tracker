@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { UserInfoService } from '../user-info.service';
 // import * as firebase from 'firebase';
 import { AngularFireDatabase } from '@angular/fire/database';
@@ -11,14 +11,15 @@ export class HomePage implements OnInit {
   uInfo: any;
   alertList: any;
   sharedAlerts : any
-  constructor(private uInfoProvider: UserInfoService, private afData: AngularFireDatabase) { 
+  constructor(private uInfoProvider: UserInfoService, private afData: AngularFireDatabase, public ngZone: NgZone) { 
     this.uInfo = this.uInfoProvider.getUserInfo();
     this.sharedAlerts = []
-    this.loadAlerts()
   }
 
   ngOnInit() {
-  
+    console.log("ngonInit")
+    // this.ngZone.run(this.loadAlerts)
+    this.loadAlerts()
   }
 
   loadAlerts(){
@@ -86,9 +87,17 @@ export class HomePage implements OnInit {
         for(let key2 in alertObjs){ 
           for(let key3 in selfAlertObjs){
             if(alertObjs[key2].hasRona == true && alertObjs[key2].data.date == selfAlertObjs[key3].date){
-              this.sharedAlerts.push(
-                alertObjs[key2]
-              )
+              if(parseInt(alertObjs[key2].data.startHour) <= parseInt(selfAlertObjs[key3].startHour) && parseInt(alertObjs[key2].data.endHour) >= parseInt(selfAlertObjs[key3].startHour) ){
+                alertObjs[key2]["isCritical"] = true
+              }else{
+                alertObjs[key2]["isCritical"] = false
+              }
+              this.ngZone.run( () =>{
+                this.sharedAlerts.push(
+                  alertObjs[key2]
+                )
+              })
+              
             }
           }
         }

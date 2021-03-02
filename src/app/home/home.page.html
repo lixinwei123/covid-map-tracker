@@ -5,7 +5,19 @@
 </ion-header>
 
 <ion-content>
-  
+ 
+  <ion-card class = "card"  *ngFor = "let alert of sharedAlerts">
+    <ion-card-header class ="card-header">
+      <ion-card-subtitle >alert <span style ="float:right"> 20 minutes ago </span></ion-card-subtitle>
+      <!-- <ion-card-title>Card Title</ion-card-title> -->
+      {{alert.hasRona}}
+    </ion-card-header>
+    <ion-card-content class = "card-content">
+      A user in your current area has self reported the contract of coronavirus
+      <span class = "delete-card-icon"><ion-icon name="close-outline"></ion-icon></span>
+    </ion-card-content>
+  </ion-card>
+
 <ion-card class = "card">
   <ion-card-header class ="card-header">
     <ion-card-subtitle >3.1 miles away  <span style ="float:right"> 20 minutes ago </span></ion-card-subtitle>
