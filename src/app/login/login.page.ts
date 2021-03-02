@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AlertController, MenuController, ModalController } from '@ionic/angular';
 import {RegisterComponent} from '../register/register.component';
 import { AngularFireAuth } from "@angular/fire/auth";
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import {UserInfoService} from "../user-info.service"
 @Component({
   selector: 'app-login',
@@ -39,9 +39,14 @@ export class LoginPage implements OnInit {
           this.afAuth.signInWithEmailAndPassword(this.email,this.password).then(res =>{
           console.log("Logged in ha",res.user);
           this.uInfo.setUserInfo(res.user.uid);
-          
+          this.uInfo.usrId = res.user.uid
+          let navigationExtras: NavigationExtras = {
+            queryParams: {
+              "uid": this.uInfo.usrId
+            }
+          };
         if(res.user.uid){
-          this.router.navigateByUrl('/tabs')
+          this.router.navigateByUrl('/tabs/tab1',navigationExtras)
         }
         },
         fail =>{

@@ -1,7 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { AngularFireAuth } from "@angular/fire/auth";
 import { AngularFireDatabase } from "@angular/fire/database";
 import * as firebase from 'firebase';
+import { Subject } from 'rxjs';
+import { EventsService } from './events.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +13,10 @@ usrData: any;
 usrId: any;
 usrAlerts: any;
 hasCorona: boolean = false;
-  constructor(public afAuth: AngularFireAuth, public  afData: AngularFireDatabase) {
+private dataSub = new Subject();
+  constructor(public afAuth: AngularFireAuth, public  afData: AngularFireDatabase,
+    public ngZone: NgZone, private events: EventsService
+    ) {
 
    }
 
@@ -20,6 +25,7 @@ hasCorona: boolean = false;
      this.usrData = dataSnap.val();
      this.usrId = user.uid
      console.log("loaded current user: ", this.usrData);
+     this.events.publish('user:loaded',this.usrData);
       this.setUserAlerts()
    });
  }
@@ -31,6 +37,10 @@ hasCorona: boolean = false;
    })
     
  }
+
+ publishData(){
+    return this.usrData
+}
 //  retrieveUserAlerts(){
 //    this.afData.database.ref('alerts/' + this.usrId).get().then( (success) =>{
 //      this.usrAlerts = success.val()

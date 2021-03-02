@@ -2,6 +2,10 @@ import { Component, NgZone, OnInit } from '@angular/core';
 import { UserInfoService } from '../user-info.service';
 // import * as firebase from 'firebase';
 import { AngularFireDatabase } from '@angular/fire/database';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Route } from '@angular/compiler/src/core';
+import { EventsService } from '../events.service';
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
@@ -11,39 +15,62 @@ export class HomePage implements OnInit {
   uInfo: any;
   alertList: any;
   sharedAlerts : any
-  constructor(private uInfoProvider: UserInfoService, private afData: AngularFireDatabase, public ngZone: NgZone) { 
-    this.uInfo = this.uInfoProvider.getUserInfo();
+  uid: any;
+  constructor(private uInfoProvider: UserInfoService, private afData: AngularFireDatabase, public ngZone: NgZone,
+    public route: ActivatedRoute, public router: Router, public events: EventsService
+    ) { 
     this.sharedAlerts = []
+    this.events.subscribe('user:loaded',(data: any) => {
+      this.uInfo = data
+      console.log("big data",this.uInfo)
+      if(this.uInfo){
+        this.uid = this.uInfo.uid
+      }
+      this.loadAlerts()
+    })
+    // this.loadUserData()
+ 
+    // this.uInfoProvider.usrData.subscribe(data =>{
+    //   console.log("observation triggered")
+    // })
   }
 
   ngOnInit() {
     console.log("ngonInit")
     // this.ngZone.run(this.loadAlerts)
+    // this.loadUserData()
   }
 
   ionViewWillEnter(){
-    this.loadAlerts()
+    // this.ngZone.run( () =>{
+    //   this.loadAlerts()
+    // }) 
+    // this.loadAlerts()
+    // this.loadUserData()
   }
 
   loadAlerts(){
     this.alertList = this.uInfoProvider.getUserAlerts()
-    if(this.alertList == undefined){
+    // this.uInfo = this.uInfoProvider.getUserInfo();
+    if(this.alertList == undefined ){
+      console.log("id",this.uid)
       setTimeout(() => {
         this.loadAlerts()
       }, 1000);
     }else{
       this.afData.database.ref("addresses").on("child_added", datasnap =>{
         this.loadSharedAlerts(datasnap)
-        console.log("child_added key",datasnap.key)
+        // console.log("child_added key",datasnap.key)
 
-        console.log("child_added val", datasnap.val())
+        // console.log("child_added val", datasnap.val())
       })
       this.afData.database.ref("addresses").on("child_changed",datasnap =>{
         this.loadSharedAlerts(datasnap)
-        console.log("child_changed key", datasnap.key)
-        console.log("child_changed val", datasnap.val())
+        // console.log("child_changed key", datasnap.key)
+        // console.log("child_changed val", datasnap.val())
       })
     }
+    return
   }
 
 
@@ -67,10 +94,11 @@ export class HomePage implements OnInit {
 
   loadSharedAlerts(datasnap){
     let usrIds = this.getKey(datasnap.val()) //get all the userIds out the object
+    console.log("all the ids",usrIds)
     let selfAlertObjs = this.isAddressInList(datasnap.key) // the object that contains all the alert objects that match address
     // console.log("cats",selfAlertObj,key)
     for(let usrIndex in usrIds){
-      if( selfAlertObjs.length > 0 && usrIds[usrIndex] != this.uInfoProvider.getUserId()){ //if self has addresses matches the given address and usrId diff
+      if( selfAlertObjs.length > 0 && usrIds[usrIndex] != this.uid){ //if self has addresses matches the given address and usrId diff
         console.log("first if statement")
         let alertObjs = datasnap.val()[usrIds[usrIndex]] //get all the alertObjs given a usrId
         console.log("first obj",alertObjs)
@@ -102,6 +130,9 @@ export class HomePage implements OnInit {
                   }
                 }
                 if(doPush){
+                  console.log("why push",alertObjs[key2])
+                  console.log(selfAlertObjs[key3])
+                  console.log(usrIds[usrIndex])
                   this.sharedAlerts = [alertObjs[key2]].concat(this.sharedAlerts)
                   // this.sharedAlerts.push(
                   //   alertObjs[key2]
