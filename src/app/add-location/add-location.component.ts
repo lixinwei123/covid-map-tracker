@@ -38,7 +38,7 @@ export class AddLocationComponent implements OnInit {
     private afData: AngularFireDatabase,
     public navParam: NavParams) { 
     this.mapStyle = mapConst.darkThemeMap;
-    this.getGPS()
+ 
     this.autocompleteItems = [];
     this.autocomplete = {
       query: ''
@@ -63,6 +63,8 @@ export class AddLocationComponent implements OnInit {
       this.lon = this.navParam.get("latlonP").lon
       console.log(this.lat,"hi")
       this.loadMap()
+    }else{
+      this.getGPS()
     }
 
  
