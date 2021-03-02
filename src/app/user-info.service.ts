@@ -70,7 +70,7 @@ private dataSub = new Subject();
    this.usrData = dataSnap.val();
    this.usrId = id
    console.log("loaded current user: ", this.usrData);
-
+   this.events.publish('user:hasId',this.usrId);
  });
 }
 

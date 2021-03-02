@@ -28,6 +28,13 @@ export class HomePage implements OnInit {
       }
       this.loadAlerts()
     })
+
+    this.events.subscribe('user:hasId',(data: any) => {
+      this.uid = data
+      console.log("big data",this.uid)
+      this.loadAlerts()
+    })
+
     // this.loadUserData()
  
     // this.uInfoProvider.usrData.subscribe(data =>{
@@ -37,6 +44,9 @@ export class HomePage implements OnInit {
 
   ngOnInit() {
     console.log("ngonInit")
+    if(this.uInfoProvider.getUserId()){
+      this.uInfoProvider.setUserInfoById(this.uInfoProvider.getUserId())
+    }
     // this.ngZone.run(this.loadAlerts)
     // this.loadUserData()
   }
@@ -47,12 +57,13 @@ export class HomePage implements OnInit {
     // }) 
     // this.loadAlerts()
     // this.loadUserData()
+    this.loadAlerts()
   }
 
   loadAlerts(){
     this.alertList = this.uInfoProvider.getUserAlerts()
-    // this.uInfo = this.uInfoProvider.getUserInfo();
-    if(this.alertList == undefined ){
+    this.uInfo = this.uInfoProvider.getUserInfo();
+    if(this.alertList == undefined || (this.uInfo == undefined && this.uid == undefined)){
       console.log("id",this.uid)
       setTimeout(() => {
         this.loadAlerts()
