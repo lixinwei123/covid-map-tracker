@@ -35,20 +35,20 @@ export class ManagePlacePage implements OnInit {
         this.loadUserData()
       }, 1000);
     }else{
-      console.log("get big data",this.alertEvents)
+      // console.log("get big data",this.alertEvents)
       this.eventList = []
       for(let obj in this.alertEvents){
           this.alertEvents[obj].startHour = this.alertEvents[obj].startHour.split(":")[0] + ":" + "00"
           this.alertEvents[obj].endHour = this.alertEvents[obj].endHour.split(":")[0] + ":" + "00"
         this.alertEvents[obj].id = obj
         this.eventList.push(this.alertEvents[obj])
-        console.log(this.alertEvents[obj])
+        // console.log(this.alertEvents[obj])
       }
     }
   }
 
   async modifyEvent(event) {
-    console.log( event.startHour)
+    // console.log( event.startHour)
     let id = event.id
     const modal = await this.modalCtrl.create({
       component: AddLocationComponent,
@@ -63,7 +63,7 @@ export class ManagePlacePage implements OnInit {
       }
     });
     modal.onDidDismiss().then( (doReload) =>{
-      console.log(doReload)
+      // console.log(doReload)
       if(doReload.data){
         this.loadUserData()
       }
@@ -73,12 +73,12 @@ export class ManagePlacePage implements OnInit {
   }
 
   deleteEvent(event){
-    console.log(this.uInfo.getUserId())
+    // console.log(this.uInfo.getUserId())
     this.afData.database.ref("alerts").child(this.uInfo.getUserId()).child(event.id).remove((success) =>{
-      console.log("data deleted")
+      // console.log("data deleted")
       for(let index in this.eventList){
         if(this.eventList[index].id == event.id){
-          console.log(index)
+          // console.log(index)
           this.ngZone.run( () =>{
             this.eventList.splice(index,1)
           })

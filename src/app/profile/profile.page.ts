@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
@@ -30,7 +31,8 @@ export class ProfilePage implements OnInit {
     {val:'Diarrhea',isChecked: false}
   ];
   constructor(public alertCtrl: AlertController, private uInfo: UserInfoService, public router: Router,
-    private afData: AngularFireDatabase) {
+    private afData: AngularFireDatabase,
+    private afAuth: AngularFireAuth) {
     this.loadUserData()
     let currentDay: any = new Date().getDate()
     if(currentDay < 10){
@@ -43,7 +45,7 @@ export class ProfilePage implements OnInit {
     let currentYear = new Date().getFullYear()
     this.date = currentYear + "-" + currentMonth + "-" + currentDay
     this.maxVal = this.date
-    console.log(this.date)
+    // console.log(this.date)
     // this.isRona = this.uInfo.getUserInfo().hasCorona
    }
 
@@ -51,7 +53,7 @@ export class ProfilePage implements OnInit {
   }
 
   updateRonaDate(){
-    console.log(this.date)
+    // console.log(this.date)
     this.uInfo.setCoronaDate(this.date.split("T")[0]);
     this.handleRona()
   }
@@ -115,8 +117,8 @@ export class ProfilePage implements OnInit {
   }
 
   async confirmRona(){
-    console.log(this.isRona)
-    console.log(this.date)
+    // console.log(this.isRona)
+    // console.log(this.date)
     this.isRona = !this.isRona
     const alert = await this.alertCtrl.create({
       header: "Are you sure? users will be notified",
@@ -139,26 +141,26 @@ export class ProfilePage implements OnInit {
       ]
     })
     await alert.present();
-    console.log()
+    // console.log()
   }
 
   handleRona(){
     let alerts = this.uInfo.getUserAlerts()
     let one_day=1000*60*60*24;
-    console.log(alerts)
+    // console.log(alerts)
     for(let id in alerts){
-      console.log(alerts[id])
+      // console.log(alerts[id])
       let alertDate =alerts[id].date
       alertDate = new Date(alertDate).getTime()
       let ronaDate = new Date(this.date).getTime()
       let dayDiff = Math.round((Math.abs((alertDate - ronaDate))/one_day))
       if(dayDiff <14 && this.isRona){
         this.afData.database.ref("addresses").child(alerts[id].address).child(this.uInfo.getUserId()).child(id).child("hasRona").set(true).then( (success) =>{
-          console.log("users all notified")
+          // console.log("users all notified")
         })
       }else {
         this.afData.database.ref("addresses").child(alerts[id].address).child(this.uInfo.getUserId()).child(id).child("hasRona").set(false).then( (success) =>{
-          console.log("users all notified")
+          // console.log("users all notified")
         })
       }
     }
@@ -168,4 +170,9 @@ export class ProfilePage implements OnInit {
     this.router.navigateByUrl('/manage-place')
   }
 
+  logOut(){
+    this.afAuth.signOut().then(() =>{
+      this.router.navigateByUrl('/login');
+    })
+  }
 }

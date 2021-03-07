@@ -1,6 +1,6 @@
-<ion-content>
-  <ion-item class = "background-primary">
-    <ion-input type="text" [(ngModel)]="autocomplete.query"   (ionInput)="updateSearch()" placeholder= "search and add an address you been to"></ion-input>
+<ion-content class="dark-background">
+  <ion-item class = "background-primary item-background">
+    <ion-input type="text" [(ngModel)]="autocomplete.query"   (ionInput)="updateSearch()" placeholder= "search and add an address you been to" class= "item-background"></ion-input>
     <ion-button icon-only (click) = "search()"> <ion-icon name="search-outline"></ion-icon></ion-button>
   </ion-item>
 
@@ -14,7 +14,7 @@
   <ion-grid>
     <ion-row>
       <ion-col>
-        <ion-item class = "background-primary">
+        <ion-item class = "background-primary item-background" >
           <!-- <ion-label position = "floating">Month, day, Year</ion-label> -->
           <ion-datetime displayFormat = "MMM DD, YYYY" placeholder= "date" [max] = "maxDate" min = "2020" display-timezone="utc" [(ngModel)] = "date" ></ion-datetime>
         </ion-item>
@@ -22,13 +22,13 @@
     </ion-row>
     <ion-row>
       <ion-col  class = "fixed-col" size= "6">
-        <ion-item class = "background-primary">
+        <ion-item class = "background-primary item-background">
           <!-- <ion-label position = "floating">Starting hour</ion-label> -->
           <ion-datetime displayFormat = "HH" placeholder="starting Hour" display-timezone="utc" [(ngModel)] = "startHour"></ion-datetime>
         </ion-item>
       </ion-col>
       <ion-col  class = "fixed-col" size= "6">
-        <ion-item class = "background-primary">
+        <ion-item class = "background-primary item-background">
           <!-- <ion-label position = "floating">Ending hour</ion-label> -->
           <ion-datetime displayFormat = "HH" placeholder="ending Hour" display-timezone="utc" [(ngModel)] = "endHour"></ion-datetime>
         </ion-item>

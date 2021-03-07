@@ -55,13 +55,13 @@ private dataSub = new Subject();
 
  setCoronaDate(date){
   this.afData.database.ref('users/' + this.usrId).child("coronaDate").set(date).then(() =>{
-    console.log("date set!")
+    // console.log("date set!")
   });
  }
 
  setUserDiagnostic(data){
   this.afData.database.ref('users/' + this.usrId).child("diagnostic").set(data).then(() =>{
-    console.log("date set!")
+    // console.log("date set!")
   });
  }
 

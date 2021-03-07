@@ -27,13 +27,13 @@ export class RegisterComponent implements OnInit {
     private alertCtrl: AlertController,
     private afData: AngularFireDatabase
     ) {
-    console.log('Hello RegisterComponent Component');
+    // console.log('Hello RegisterComponent Component');
     this.text = 'Hello World';
   }
 
   closeModal(){
     this.modalCtrl.dismiss();
-    console.log('clicked on closeModal function');
+    // console.log('clicked on closeModal function');
   }
   ngOnInit() {}
 
@@ -61,7 +61,7 @@ export class RegisterComponent implements OnInit {
       this.alertError("Emails do not match.");
     }
     else if(this.password.length < 7){
-      console.log(this.password, this.passwordC)
+      // console.log(this.password, this.passwordC)
       this.alertError("The password should be at least 7 characters long.");
     }
     else if (re.test(String(this.email).toLowerCase()) == false){
@@ -87,7 +87,7 @@ export class RegisterComponent implements OnInit {
        hasCorona: false
      }
      this.afData.database.ref('users').child(usrInfo.uid).update(usrInfo);
-         console.log("registered",res.user.uid)
+        //  console.log("registered",res.user.uid)
         this.closeModal()
     },
       fail =>{

@@ -1,44 +1,48 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar >
     <ion-title>Welcome</ion-title>
+    <ion-button icon-only style="--background:transparent" (click) = "logOut()">
+      <ion-icon name="log-out-outline" ></ion-icon>
+    </ion-button>
   </ion-toolbar>
+
 </ion-header>
 
-<ion-content>
-  <ion-item>
+<ion-content class = "dark-background">
+  <ion-item class = "dark-background">
   <ion-label style = "text-align: center;">Symptoms & Risk Analysis</ion-label>
 </ion-item>
 <ion-progress-bar  value= {{progressVal}} [color] = "progressBarColor"></ion-progress-bar>
 <ion-grid>
   <ion-row>
-    <ion-col>
+    <ion-col class = "dark-background">
       caution
     </ion-col>
-    <ion-col>
+    <ion-col class = "dark-background">
       risky
     </ion-col>
-    <ion-col>
+    <ion-col class = "dark-background">
       stay home
     </ion-col>
   </ion-row>
 </ion-grid>
   <ion-list>
-    <ion-item *ngFor="let entry of sympForm">
+    <ion-item *ngFor="let entry of sympForm" class = "dark-background">
       <ion-label>{{entry.val}}</ion-label>
-      <ion-checkbox slot="end" [(ngModel)]="entry.isChecked" (click) = "evalDanger(entry)"></ion-checkbox>
+      <ion-checkbox slot="end" [(ngModel)]="entry.isChecked" (click) = "evalDanger(entry)" color="tertiary"></ion-checkbox>
     </ion-item>
   </ion-list>
 
   <ion-grid>
     <ion-row>
       <ion-col >
-      <ion-item>
+      <ion-item class = "dark-background">
         <ion-label>I have covid</ion-label>
-        <ion-checkbox slot="end" [(ngModel)] = "isRona" (click) = confirmRona()></ion-checkbox>  
+        <ion-checkbox slot="end" [(ngModel)] = "isRona" (click) = "confirmRona()" color="tertiary" ></ion-checkbox>  
           </ion-item> 
       </ion-col>
       <ion-col *ngIf = "isRona">
-        <ion-item class = "background-primary" >
+        <ion-item class = "dark-background" >
           <!-- <ion-label position = "floating">Month, day, Year</ion-label> -->
           <ion-datetime displayFormat = "MMM DD, YYYY" min ="2020" [max] = "maxVal" placeholder= "date found out" display-timezone="utc" [(ngModel)] = "date" (ionChange) = "updateRonaDate()"></ion-datetime>
         </ion-item>

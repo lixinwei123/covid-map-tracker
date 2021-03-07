@@ -111,7 +111,7 @@ loadUserData(){
       this.loadUserData()
     }, 1000);
   }else{
-    console.log("loaded user info on add-location",this.usrInfo)
+    // console.log("loaded user info on add-location",this.usrInfo)
   }
 }
 addMap(lat,long){

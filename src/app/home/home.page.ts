@@ -22,7 +22,7 @@ export class HomePage implements OnInit {
     this.sharedAlerts = []
     this.events.subscribe('user:loaded',(data: any) => {
       this.uInfo = data
-      console.log("big data",this.uInfo)
+      // console.log("big data",this.uInfo)
       if(this.uInfo){
         this.uid = this.uInfo.uid
       }
@@ -31,7 +31,7 @@ export class HomePage implements OnInit {
 
     this.events.subscribe('user:hasId',(data: any) => {
       this.uid = data
-      console.log("big data",this.uid)
+      // console.log("big data",this.uid)
       this.loadAlerts()
     })
 
@@ -43,7 +43,7 @@ export class HomePage implements OnInit {
   }
 
   ngOnInit() {
-    console.log("ngonInit")
+    // console.log("ngonInit")
     if(this.uInfoProvider.getUserId()){
       this.uInfoProvider.setUserInfoById(this.uInfoProvider.getUserId())
     }
@@ -64,7 +64,7 @@ export class HomePage implements OnInit {
     this.alertList = this.uInfoProvider.getUserAlerts()
     this.uInfo = this.uInfoProvider.getUserInfo();
     if(this.alertList == undefined || (this.uInfo == undefined && this.uid == undefined)){
-      console.log("id",this.uid)
+      // console.log("id",this.uid)
       setTimeout(() => {
         this.loadAlerts()
       }, 1000);
@@ -105,15 +105,15 @@ export class HomePage implements OnInit {
 
   loadSharedAlerts(datasnap){
     let usrIds = this.getKey(datasnap.val()) //get all the userIds out the object
-    console.log("all the ids",usrIds)
+    // console.log("all the ids",usrIds)
     let selfAlertObjs = this.isAddressInList(datasnap.key) // the object that contains all the alert objects that match address
     // console.log("cats",selfAlertObj,key)
     for(let usrIndex in usrIds){
       if( selfAlertObjs.length > 0 && usrIds[usrIndex] != this.uid){ //if self has addresses matches the given address and usrId diff
-        console.log("first if statement")
+        // console.log("first if statement")
         let alertObjs = datasnap.val()[usrIds[usrIndex]] //get all the alertObjs given a usrId
-        console.log("first obj",alertObjs)
-        console.log("second obj", selfAlertObjs)
+        // console.log("first obj",alertObjs)
+        // console.log("second obj", selfAlertObjs)
         for(let key2 in alertObjs){ 
           for(let key3 in selfAlertObjs){
             if(alertObjs[key2].hasRona == true && alertObjs[key2].data.date == selfAlertObjs[key3].date){
@@ -141,9 +141,9 @@ export class HomePage implements OnInit {
                   }
                 }
                 if(doPush){
-                  console.log("why push",alertObjs[key2])
-                  console.log(selfAlertObjs[key3])
-                  console.log(usrIds[usrIndex])
+                  // console.log("why push",alertObjs[key2])
+                  // console.log(selfAlertObjs[key3])
+                  // console.log(usrIds[usrIndex])
                   this.sharedAlerts = [alertObjs[key2]].concat(this.sharedAlerts)
                   // this.sharedAlerts.push(
                   //   alertObjs[key2]
@@ -154,7 +154,7 @@ export class HomePage implements OnInit {
             }
           }
         }
-        console.log(this.sharedAlerts,"shared alerts")
+        // console.log(this.sharedAlerts,"shared alerts")
       }
     }
 
