@@ -1,6 +1,8 @@
 import { Component, ElementRef, Input, NgZone, OnInit, ViewChild } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { AlertController, ModalController, NavController, NavParams } from '@ionic/angular';
+import { EventsService } from '../events.service';
 import {MapStyleConstants} from '../mapStyle';
 import { UserInfoService } from '../user-info.service';
 
@@ -26,6 +28,8 @@ export class AddLocationComponent implements OnInit {
   maxDate: any;
   isModify: boolean = false;
   usrInfo: any;
+  usrId: any;
+  isCorona:any;
   service = new google.maps.places.AutocompleteService();
 @ViewChild('map') mapElement: ElementRef;
   map: any;
@@ -36,7 +40,9 @@ export class AddLocationComponent implements OnInit {
     public alertCtrl: AlertController,
     private uInfo: UserInfoService,
     private afData: AngularFireDatabase,
-    public navParam: NavParams) { 
+    public navParam: NavParams,
+    public events: EventsService,
+    private afAuth: AngularFireAuth) { 
     this.mapStyle = mapConst.darkThemeMap;
  
     this.autocompleteItems = [];
@@ -66,7 +72,6 @@ export class AddLocationComponent implements OnInit {
     }else{
       this.getGPS()
     }
-
  
 
     let currentDay: any = new Date().getDate()
@@ -79,6 +84,22 @@ export class AddLocationComponent implements OnInit {
     }
     let currentYear = new Date().getFullYear()
     this.maxDate = currentYear + "-" + currentMonth + "-" + currentDay
+
+    // this.events.subscribe('user:loaded',(data: any) => {
+    //   this.usrInfo = data
+    //   console.log("big data on add-location",this.usrInfo)
+    // })
+    this.afAuth.currentUser.then( (usrData) =>{
+      this.usrId = usrData.uid
+      console.log(this.usrId)
+      this.afData.database.ref("users").child(this.usrId).get().then( (data) =>{
+        this.usrInfo = data.val()
+        console.log("got data!",this.usrInfo)
+      } )
+      this.uInfo.setUserInfo(this.usrId)
+    })
+
+
   }
 
   loadMap(){
@@ -91,7 +112,7 @@ export class AddLocationComponent implements OnInit {
     }
   }
   ngOnInit() {
-    this.loadUserData()
+    // this.loadUserData(false)
   }
    getGPS(){
     navigator.geolocation.getCurrentPosition( (success) => {
@@ -104,14 +125,14 @@ export class AddLocationComponent implements OnInit {
     }
 }
 
-loadUserData(){
+loadUserData(secondTime){
   this.usrInfo = this.uInfo.getUserInfo()
   if(this.usrInfo == undefined){
     setTimeout(() => {
-      this.loadUserData()
+      this.loadUserData(true)
     }, 1000);
   }else{
-    // console.log("loaded user info on add-location",this.usrInfo)
+    console.log("loaded user info on add-location",this.usrInfo)
   }
 }
 addMap(lat,long){
@@ -246,8 +267,9 @@ addMarker(){
   console.log(date)
   console.log(endHour)
   if(!this.isModify){
-    this.afData.database.ref('alerts').child(this.usrInfo.uid).push(dataObj).then( (success) =>{
-      this.afData.database.ref('addresses').child(this.autocomplete.query).child(this.usrInfo.uid).child(success.key).set({hasRona: this.usrInfo.hasCorona, data:dataObj}).then(() =>{
+    // console.log(this.usrInfo.uid)
+    this.afData.database.ref('alerts').child(this.usrId).push(dataObj).then( (success) =>{
+      this.afData.database.ref('addresses').child(this.autocomplete.query).child(this.usrId).child(success.key).set({hasRona: this.usrInfo.hasCorona, data:dataObj}).then(() =>{
         this.alert("success!", "the data has been successfully uploaded")
         this.uInfo.setUserAlerts()
         this.modalCtrl.dismiss(true)
@@ -262,9 +284,9 @@ addMarker(){
       this.alert("error",fail)
     });
   }else{
-    this.afData.database.ref('alerts').child(this.usrInfo.uid).child(this.navParam.get("eventId")).update(dataObj).then( (success) =>{
-      this.afData.database.ref('addresses').child(this.navParam.get("addressP")).child(this.usrInfo.uid).child(this.navParam.get("eventId")).remove( () =>{
-        this.afData.database.ref('addresses').child(this.autocomplete.query).child(this.usrInfo.uid).child(this.navParam.get("eventId")).set({hasRona: this.usrInfo.hasCorona, data:dataObj}).then(() =>{
+    this.afData.database.ref('alerts').child(this.usrId).child(this.navParam.get("eventId")).update(dataObj).then( (success) =>{
+      this.afData.database.ref('addresses').child(this.navParam.get("addressP")).child(this.usrId).child(this.navParam.get("eventId")).remove( () =>{
+        this.afData.database.ref('addresses').child(this.autocomplete.query).child(this.usrId).child(this.navParam.get("eventId")).set({hasRona: this.usrInfo.hasCorona, data:dataObj}).then(() =>{
           this.alert("success!", "the data has been successfully modified")
           this.uInfo.setUserAlerts()
           this.modalCtrl.dismiss(true)

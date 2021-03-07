@@ -5,6 +5,7 @@ import { AngularFireDatabase } from '@angular/fire/database';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Route } from '@angular/compiler/src/core';
 import { EventsService } from '../events.service';
+import { AngularFireAuth } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-home',
@@ -16,24 +17,35 @@ export class HomePage implements OnInit {
   alertList: any;
   sharedAlerts : any
   uid: any;
+  map:any = {};
   constructor(private uInfoProvider: UserInfoService, private afData: AngularFireDatabase, public ngZone: NgZone,
-    public route: ActivatedRoute, public router: Router, public events: EventsService
+    public route: ActivatedRoute, public router: Router, public events: EventsService, private afAuth: AngularFireAuth
     ) { 
     this.sharedAlerts = []
     this.events.subscribe('user:loaded',(data: any) => {
       this.uInfo = data
-      // console.log("big data",this.uInfo)
+      this.uid = this.uInfo.uid
+      console.log("big data",this.uInfo)
+      // this.afData.database.ref("alerts").child(this.uid).get().then( (data) =>{
+      //   this.ngZone.run(() => {
+      //     this.alertList = data.val()
+      //   })
+      //   this.afData.database.ref("users").child(this.uid).get().then( (data2) =>{
+      //     this.uInfo = data2.val()
+      //   })
+      //   console.log("got data!",this.alertList)
+      // } )
       if(this.uInfo){
         this.uid = this.uInfo.uid
       }
-      this.loadAlerts()
+      // this.loadAlerts()
     })
 
-    this.events.subscribe('user:hasId',(data: any) => {
-      this.uid = data
-      // console.log("big data",this.uid)
-      this.loadAlerts()
-    })
+    // this.events.subscribe('user:hasId',(data: any) => {
+    //   this.uid = data
+    //   // console.log("big data",this.uid)
+    //   this.loadAlerts()
+    // })
 
     // this.loadUserData()
  
@@ -144,7 +156,11 @@ export class HomePage implements OnInit {
                   // console.log("why push",alertObjs[key2])
                   // console.log(selfAlertObjs[key3])
                   // console.log(usrIds[usrIndex])
-                  this.sharedAlerts = [alertObjs[key2]].concat(this.sharedAlerts)
+                  if(!(alertObjs[key2].data.address in this.map )){
+                    this.sharedAlerts = [alertObjs[key2]].concat(this.sharedAlerts)
+                    this.map[alertObjs[key2].data.address] = true
+                  }
+
                   // this.sharedAlerts.push(
                   //   alertObjs[key2]
                   // )
@@ -158,5 +174,10 @@ export class HomePage implements OnInit {
       }
     }
 
+    }
+    // for(let obj in this.sharedAlerts){
+    //   console.log(this.sharedAlerts[obj])
+    // }
+
   }
-}
+

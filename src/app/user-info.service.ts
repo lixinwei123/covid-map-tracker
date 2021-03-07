@@ -9,10 +9,10 @@ import { EventsService } from './events.service';
   providedIn: 'root'
 })
 export class UserInfoService {
-usrData: any;
-usrId: any;
-usrAlerts: any;
-hasCorona: boolean = false;
+public usrData: any;
+public usrId: any;
+public usrAlerts: any;
+public hasCorona: boolean = false;
 private dataSub = new Subject();
   constructor(public afAuth: AngularFireAuth, public  afData: AngularFireDatabase,
     public ngZone: NgZone, private events: EventsService
@@ -21,6 +21,7 @@ private dataSub = new Subject();
    }
 
    setUserInfo(user){
+     console.log("setting user",user)
     return this.afData.database.ref('users/' + user.uid).on('value',dataSnap =>{
      this.usrData = dataSnap.val();
      this.usrId = user.uid
@@ -86,5 +87,9 @@ getUserId(){
 }
 getUserAlerts(){
   return this.usrAlerts;
+}
+
+setUserData(data){
+  this.usrData = data
 }
 }

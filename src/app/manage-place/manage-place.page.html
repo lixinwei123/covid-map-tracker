@@ -1,21 +1,21 @@
 <ion-header>
   <ion-toolbar>
-    <ion-button icon-only (click) = "goBack()"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
+    <ion-button icon-only (click) = "goBack()" style ="--background:transparent"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
     <ion-title>Manage Places</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-list-header>
+<ion-content class ="dark-background">
+  <ion-list-header class ="dark-background">
     Modify and Delete Your Places
   </ion-list-header>
   <ion-list *ngFor = "let event of eventList">
     <ion-item-sliding>
-      <ion-item>
+      <ion-item class ="dark-background">
         <ion-label>  
           <h2>{{event.date}}</h2>
           <h3>Start Hour: {{event.startHour}} End Hour: {{event.endHour}}</h3>
-          <p>{{event.address}}</p></ion-label>
+          <p class ="dark-background">{{event.address}}</p></ion-label>
       </ion-item>
   
       <ion-item-options side="end">

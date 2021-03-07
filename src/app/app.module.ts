@@ -16,11 +16,12 @@ import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { environment } from '../environments/environment';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
+import {UserInfoService} from './user-info.service'
 // import {RegisterModule} from "./register/register.module";
 import { FormsModule } from '@angular/forms'; 
 @NgModule({
-  declarations: [AppComponent, RegisterComponent,AddLocationComponent,],
-  entryComponents: [],
+  declarations: [AppComponent, RegisterComponent,AddLocationComponent,UserInfoService],
+  entryComponents: [UserInfoService],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   AngularFireModule.initializeApp(environment.firebaseConfig),
   AngularFireAuthModule,
@@ -28,10 +29,11 @@ import { FormsModule } from '@angular/forms';
   AngularFirestoreModule,
   FormsModule,
   
+  
   // RegisterModule
 ],
 
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy},File,],
-  bootstrap: [AppComponent],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy},File,UserInfoService],
+  bootstrap: [AppComponent,],
 })
 export class AppModule {}

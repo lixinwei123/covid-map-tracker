@@ -5,7 +5,7 @@
   </ion-item>
 
   <ion-list class = "search-list" *ngIf = "autocompleteItems.length > 0">
-    <ion-item *ngFor="let item of autocompleteItems" tappable   (click)="chooseItem(item)">
+    <ion-item *ngFor="let item of autocompleteItems" tappable   (click)="chooseItem(item)" class ="dark-background">
       {{ item }}
     </ion-item>
   </ion-list>
